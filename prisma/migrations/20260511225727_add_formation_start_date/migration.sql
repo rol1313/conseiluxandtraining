@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `Formation` ADD COLUMN `endDate` DATETIME(3) NULL,
+    ADD COLUMN `mode` VARCHAR(191) NULL,
+    ADD COLUMN `startDate` DATETIME(3) NULL;

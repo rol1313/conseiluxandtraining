@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Category {
+  id            Int            @id @default(autoincrement())
+  slug          String         @unique
+  name          String
+  subcategories Subcategory[]
+  formations    Formation[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Subcategory {
+  id         Int         @id @default(autoincrement())
+  slug       String      @unique
+  name       String
+  categoryId Int
+  category   Category    @relation(fields: [categoryId], references: [id])
+  formations Formation[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Formation {
+  id            Int          @id @default(autoincrement())
+  title         String       @db.Text
+  slug          String       @unique
+  description   String       @db.Text
+  objectives    String?      @db.Text
+  program       String?      @db.Text
+  prerequisites String?      @db.Text
+  strengths     String?      @db.Text
+  forWho        String?      @db.Text
+  trainers      String?      @db.Text
+  certifications String?     @db.Text
+  image         String?
+  modalities    String?
+  badges        String?
+  duration      String
+  level         String
+  rating        Float        @default(0)
+  participants  Int          @default(0)
+  price         String
+  gradient      String
+  tags          String       @db.Text
+  published     Boolean      @default(false)
+  categoryId    Int
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subcategoryId Int?
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  posts     Post[]
+  resources Resource[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  excerpt     String   @db.Text
+  content     String   @db.Text
+  image       String?
+  published   Boolean  @default(false)
+  authorId    Int
+  author      Admin    @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Resource {
+  id          Int          @id @default(autoincrement())
+  title       String
+  slug        String       @unique
+  excerpt     String?      @db.Text
+  content     String?      @db.Text
+  image       String?
+  type        ResourceType
+  date        DateTime?
+  duration    String?
+  speaker     String?
+  link        String?
+  published   Boolean      @default(false)
+  authorId    Int
+  author      Admin        @relation(fields: [authorId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+enum ResourceType {
+  INTERVIEW
+  LIVRE_BLANC
+  PRESSE
+  WEBINAIRE
+}
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String?
+  company   String?
+  content   String   @db.Text
+  rating    Int      @default(5)
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  startDate   DateTime
+  endDate     DateTime?
+  mode        String   // "En ligne", "Présentiel", "Hybride"
+  location    String?  // ville ou lien zoom
+  duration    String?  // "3 mois", "6 mois", "21h"
+  price       String?
+  slug        String   @unique
+  published   Boolean  @default(false)
+  gradient    String   @default("from-primary to-primary-dark")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
