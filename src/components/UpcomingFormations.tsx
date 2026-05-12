@@ -99,7 +99,7 @@ const UpcomingFormations = () => {
                 {mode}
               </span>
               {session.price && (
-                <span className="text-xs font-bold text-orange">{session.price}</span>
+                <span className="text-xs font-bold text-orange">{session.price} FCFA</span>
               )}
             </div>
           </div>

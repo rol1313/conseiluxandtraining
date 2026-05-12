@@ -69,9 +69,38 @@ export default function FormationDetailPage() {
       .catch(() => setLoading(false));
   }, [slug, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: formData.prenom,
+          lastName: formData.nom,
+          email: formData.email,
+          phone: formData.telephone,
+          subject: `Demande d'information - ${formation?.title}`,
+          message: `Profil: ${formData.profil}\nSource: ${formData.source}\nNewsletter: ${formData.newsletter ? "Oui" : "Non"}\n\nFormation: ${formation?.title}\nPrix: ${formation?.price} FCFA\nDurée: ${formation?.duration}H`,
+        }),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError("Erreur lors de l'envoi. Veuillez réessayer.");
+      }
+    } catch {
+      setError("Erreur réseau. Veuillez réessayer.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -452,13 +481,18 @@ export default function FormationDetailPage() {
                         J&apos;accepte de recevoir des communications de Conseilux Training
                       </label>
 
+                      {error && (
+                        <p className="text-red-500 text-xs text-center">{error}</p>
+                      )}
+
                       <motion.button
                         type="submit"
+                        disabled={submitting}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full py-3 bg-orange text-white rounded-full font-medium text-sm hover:bg-orange-dark transition-colors"
+                        className="w-full py-3 bg-orange text-white rounded-full font-medium text-sm hover:bg-orange-dark transition-colors disabled:opacity-50"
                       >
-                        Soumettre
+                        {submitting ? "Envoi en cours..." : "Soumettre"}
                       </motion.button>
                     </form>
                   )}

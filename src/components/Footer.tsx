@@ -133,32 +133,38 @@ const Footer = () => {
               <h4 className="text-primary font-bold font-montserrat mb-6">Nos formations</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/formations?category=technologies-numeriques-et-cybersecurite">
+                  <Link href="/formations?category=technologies-numeriques-et-cybersecurite"
+                  className="text-text-gray hover:text-primary transition-colors text-sm text-size">
                       Technologies Numériques & Cybersécurité
                     </Link>
                 </li>
                 <li>
-                  <Link href="/formations?category=normes-iso-et-conformite">
+                  <Link href="/formations?category=normes-iso-et-conformite"
+                  className="text-text-gray hover:text-primary transition-colors text-sm text-size">
                       Normes ISO & Conformité
                     </Link>
                 </li>
                 <li>
-                  <Link href="/formations?category=gestion-de-projet-management-et-leadership">
+                  <Link href="/formations?category=gestion-de-projet-management-et-leadership"
+                  className="text-text-gray hover:text-primary transition-colors text-sm text-size">
                       Gestion de Projet, Management & leadership
                   </Link>
                 </li>
                 <li>
-                  <Link href="/formations?category=filieres-metiers">
+                  <Link href="/formations?category=filieres-metiers"
+                  className="text-text-gray hover:text-primary transition-colors text-sm text-size">
                       Filière Métiers
                     </Link>
                 </li>
                 <li>
-                  <Link href="/formations?category=performance-commerciale">
+                  <Link href="/formations?category=performance-commerciale"
+                  className="text-text-gray hover:text-primary transition-colors text-sm text-size">
                       Performance Commerciale
                     </Link>
                 </li>
                 <li>
-                  <Link href="/formations?category=facilitation-professionnelle">
+                  <Link href="/formations?category=facilitation-professionnelle"
+                  className="text-text-gray hover:text-primary transition-colors text-sm text-size">
                     Facilitation Professionnelle
                   </Link>
                 </li>
