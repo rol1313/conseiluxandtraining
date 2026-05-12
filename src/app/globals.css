@@ -171,7 +171,7 @@
 }
 
 .text-lg {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
     line-height: 1.75rem;
 }
 
@@ -187,21 +187,21 @@
 
 @media (width >= 768px) {
     .md\:text-4xl {
-        font-size: 2.2rem !important;
+        font-size: 2.1rem !important;
         line-height: 2.5rem;
     }
 }
 
 @media (width >= 768px) {
     .md\:text-3xl {
-        font-size: 1.6rem !important;
+        font-size: 1.5rem !important;
         line-height: 2.25rem;
     }
 }
 
 @media (width >= 1024px) {
     .lg\:text-6xl {
-        font-size: 2.6rem !important;
+        font-size: 2.5rem !important;
         line-height: 1;
     }
 }
@@ -212,7 +212,7 @@
 }
 
 .text-5xl {
-    font-size: 2.2rem !important;
+    font-size: 2.1rem !important;
     line-height: 1;
 }
 
