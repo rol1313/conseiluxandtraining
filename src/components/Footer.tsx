@@ -65,7 +65,7 @@ const Footer = () => {
             </p>
 
             <p className="text-text-dark text-sm mb-2 text-size">
-              2 Rue Aenue du Pont Tinel Havre de Paix
+              2 Rue Avenue du Pont Tinel Havre de Paix
             </p>
             <p className="text-primary font-bold text-size">Togo: +228 90 54 64 64 <br />
              Côte d'Ivoire +225 07 589 703 44 <br /> Niger: +227 82 64 86 04 <br /> France: +33 7 456 441 81 <br />
