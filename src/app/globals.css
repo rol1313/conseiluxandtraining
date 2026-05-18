@@ -229,3 +229,8 @@
 .font-semibold {
     font-weight: 700 !important;
 }
+
+.text-xs {
+    font-size: 1.2rem;
+    line-height: 1.8rem !important;
+}

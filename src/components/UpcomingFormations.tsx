@@ -58,8 +58,9 @@ const UpcomingFormations = () => {
         const config = modeConfig[mode] ?? { color: "text-gray-700", bg: "bg-gray-100" };
 
         return (
-          <div
+          <Link
             key={session.id}
+            href={`/sessions/${session.slug}`}
             className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-primary/5 border border-gray-100 hover:border-primary/20 rounded-xl transition-all group"
           >
             {/* Barre couleur */}
@@ -102,7 +103,7 @@ const UpcomingFormations = () => {
                 <span className="text-xs font-bold text-orange">{session.price} FCFA</span>
               )}
             </div>
-          </div>
+          </Link>
         );
       })}
 
