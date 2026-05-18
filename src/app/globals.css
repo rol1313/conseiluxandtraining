@@ -220,3 +220,12 @@
     font-size: 1.2rem !important;
     line-height: 1.75rem;
 }
+
+.text-xs {
+    font-size: .75rem;
+    line-height: 1.8rem !important;
+}
+
+.font-semibold {
+    font-weight: 700 !important;
+}
