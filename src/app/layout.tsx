@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Conseilux Training and Development offre des formations professionnelles personnalisées pour booster les compétences et la performance en entreprise. Humain. IA. RSE.",
   icons: {
-    icon: "https://ext.same-assets.com/1446127996/3468588796.png",
+    icon: "/favico.png",
   },
 };
 

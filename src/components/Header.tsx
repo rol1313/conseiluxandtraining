@@ -255,7 +255,7 @@ const Header = () => {
 
       {/* Main navigation — inchangée */}
       <div className="max-w-10xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
           <motion.span whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-primary font-montserrat">
             Conseilux 
           </motion.span>
