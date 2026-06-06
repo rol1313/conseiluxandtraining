@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Calendar, Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Session = {
   id: number;
@@ -26,6 +27,9 @@ const modeConfig: Record<string, { color: string; bg: string }> = {
 const UpcomingFormations = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetch("/api/sessions")
@@ -37,6 +41,41 @@ const UpcomingFormations = () => {
       .catch(() => setLoading(false));
   }, []);
 
+  // Auto-défilement toutes les 4 secondes
+  useEffect(() => {
+    if (sessions.length <= 1) return;
+
+    timerRef.current = setInterval(() => {
+      setDirection(1);
+      setCurrent((prev) => (prev + 1) % sessions.length);
+    }, 4000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [sessions.length]);
+
+  const goTo = (index: number) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setDirection(index > current ? 1 : -1);
+    setCurrent(index);
+    // Relance le timer
+    timerRef.current = setInterval(() => {
+      setDirection(1);
+      setCurrent((prev) => (prev + 1) % sessions.length);
+    }, 4000);
+  };
+
+  const prev = () => {
+    goTo((current - 1 + sessions.length) % sessions.length);
+    setDirection(-1);
+  };
+
+  const next = () => {
+    goTo((current + 1) % sessions.length);
+    setDirection(1);
+  };
+
   if (loading) return (
     <div className="flex items-center gap-2 text-sm text-text-gray mt-2">
       <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -46,6 +85,10 @@ const UpcomingFormations = () => {
 
   if (sessions.length === 0) return null;
 
+  const session = sessions[current];
+  const mode = session.mode ?? "En ligne";
+  const config = modeConfig[mode] ?? { color: "text-gray-700", bg: "bg-gray-100" };
+
   return (
     <div className="mt-2 flex flex-col gap-2">
       <p className="text-sm font-semibold text-text-dark flex items-center gap-2">
@@ -53,66 +96,107 @@ const UpcomingFormations = () => {
         Prochaines sessions
       </p>
 
-      {sessions.map((session) => {
-        const mode = session.mode ?? "En ligne";
-        const config = modeConfig[mode] ?? { color: "text-gray-700", bg: "bg-gray-100" };
-
-        return (
-          <Link
+      {/* Carousel */}
+      <div className="relative overflow-hidden">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
             key={session.id}
-            href={`/sessions/${session.slug}`}
-            className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-primary/5 border border-gray-100 hover:border-primary/20 rounded-xl transition-all group"
+            custom={direction}
+            initial={{ opacity: 0, x: direction * 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: direction * -60 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
           >
-            {/* Barre couleur */}
-            <div className={`w-1.5 h-12 rounded-full bg-gradient-to-b ${session.gradient} flex-shrink-0`} />
+            <Link
+              href={`/sessions/${session.slug}`}
+              className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-primary/5 border border-gray-100 hover:border-primary/20 rounded-xl transition-all group"
+            >
+              {/* Barre couleur */}
+              <div className={`w-1.5 h-12 rounded-full bg-gradient-to-b ${session.gradient} flex-shrink-0`} />
 
-            {/* Infos */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-dark truncate group-hover:text-primary transition-colors">
-                {session.title}
-              </p>
-              <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                <span className="flex items-center gap-1 text-xs text-text-gray">
-                  <Calendar className="w-3 h-3" />
-                  {new Date(session.startDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
-                  {session.endDate && (
-                    <span> → {new Date(session.endDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}</span>
+              {/* Infos */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-text-dark truncate group-hover:text-primary transition-colors">
+                  {session.title}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                  <span className="flex items-center gap-1 text-xs text-text-gray">
+                    <Calendar className="w-3 h-3" />
+                    {new Date(session.startDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                    {session.endDate && (
+                      <span> → {new Date(session.endDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    )}
+                  </span>
+                  {session.duration && (
+                    <span className="flex items-center gap-1 text-xs text-text-gray">
+                      <Clock className="w-3 h-3" />
+                      {session.duration}
+                    </span>
                   )}
+                  {session.location && (
+                    <span className="flex items-center gap-1 text-xs text-text-gray">
+                      <MapPin className="w-3 h-3" />
+                      {session.location}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Badge mode + prix */}
+              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.color}`}>
+                  {mode}
                 </span>
-                {session.duration && (
-                  <span className="flex items-center gap-1 text-xs text-text-gray">
-                    <Clock className="w-3 h-3" />
-                    {session.duration}
-                  </span>
-                )}
-                {session.location && (
-                  <span className="flex items-center gap-1 text-xs text-text-gray">
-                    <MapPin className="w-3 h-3" />
-                    {session.location}
-                  </span>
+                {session.price && (
+                  <span className="text-xs font-bold text-orange">{session.price}</span>
                 )}
               </div>
+            </Link>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Flèches navigation */}
+        {sessions.length > 1 && (
+          <div className="flex items-center justify-between mt-2">
+            {/* Points indicateurs */}
+            <div className="flex items-center gap-1">
+              {sessions.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goTo(i)}
+                  className={`rounded-full transition-all ${
+                    i === current
+                      ? "w-4 h-1.5 bg-primary"
+                      : "w-1.5 h-1.5 bg-gray-300 hover:bg-gray-400"
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* Badge mode */}
-            <div className="flex flex-col items-end gap-1 flex-shrink-0">
-              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.color}`}>
-                {mode}
-              </span>
-              {session.price && (
-                <span className="text-xs font-bold text-orange">{session.price} FCFA</span>
-              )}
+            {/* Boutons prev/next */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={prev}
+                className="p-1 rounded-lg hover:bg-gray-100 transition-colors text-text-gray hover:text-primary"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={next}
+                className="p-1 rounded-lg hover:bg-gray-100 transition-colors text-text-gray hover:text-primary"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-          </Link>
-        );
-      })}
+          </div>
+        )}
+      </div>
 
       <Link
         href="/formations"
         className="text-xs text-primary hover:text-primary-dark font-medium flex items-center gap-1 mt-1"
       >
-        Voir toutes les formations
-        <ArrowRight className="w-3 h-3" />
+        Voir toutes les formations →
       </Link>
     </div>
   );
