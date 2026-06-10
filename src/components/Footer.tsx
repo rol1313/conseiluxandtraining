@@ -255,7 +255,7 @@ const Footer = () => {
             </div>
           </div>
           <p className="text-center text-text-gray text-sm mt-6 text-size">
-            Tous droits réservés © 2025 Conseilux Training and Development
+            Tous droits réservés © 2026 Conseilux Training and Development
           </p>
           <p className="text-center text-text-gray text-sm mt-2 text-size">
             Site web réalisé par{" "}
