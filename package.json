@@ -29,7 +29,7 @@
     "react-google-recaptcha": "^3.1.0",
     "react-grab": "latest",
     "same-runtime": "^0.0.1",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
